@@ -2,6 +2,7 @@ namespace Core.Models
 {
 	public class Employer
 	{
+		public int EmployerID { get; set; }
 		public string RecordType { get; set; } = "UIEM";
 		public string EmployerUIFReferenceNo { get; set; } = string.Empty;
 		public string PAYENumber { get; set; } = string.Empty;

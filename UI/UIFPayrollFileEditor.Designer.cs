@@ -349,7 +349,7 @@
 			openMenuItem.ShortcutKeys = Keys.Control | Keys.O;
 			openMenuItem.Size = new Size(181, 26);
 			openMenuItem.Text = "&Open";
-			openMenuItem.Click += importToolStripMenuItem_Click;
+			openMenuItem.Click += OpenToolStripMenuItem_Click;
 			// 
 			// toolStripSeparator2
 			// 
@@ -362,7 +362,7 @@
 			saveMenuItem.ShortcutKeys = Keys.Control | Keys.S;
 			saveMenuItem.Size = new Size(181, 26);
 			saveMenuItem.Text = "&Save";
-			saveMenuItem.Click += exportMenuButton_Click;
+			saveMenuItem.Click += SaveMenuButton_Click;
 			// 
 			// toolStripSeparator3
 			// 
@@ -375,7 +375,7 @@
 			exitMenuItem.ShortcutKeys = Keys.Alt | Keys.F4;
 			exitMenuItem.Size = new Size(181, 26);
 			exitMenuItem.Text = "E&xit";
-			exitMenuItem.Click += exitMenuItem_Click;
+			exitMenuItem.Click += ExitMenuItem_Click;
 			// 
 			// helpMenuItem
 			// 

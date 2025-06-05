@@ -1,8 +1,9 @@
+using Core.Models;
+using Infrastructure.Export;
+using Infrastructure.Import;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text.Json;
-using UIFPayrollFileEditor.Export;
-using UIFPayrollFileEditor.Import;
 
 namespace UIFRecordApp
 {
@@ -204,7 +205,7 @@ namespace UIFRecordApp
 			}
 		}
 
-		private void exportMenuButton_Click(object sender, EventArgs e)
+		private void SaveMenuButton_Click(object sender, EventArgs e)
 		{
 			if (creatorDataGrid.Rows.Count <= 1 && employeeDataGrid.Rows.Count <= 1 && employerDataGrid.Rows.Count <= 1)
 			{
@@ -226,7 +227,11 @@ namespace UIFRecordApp
 
 		private void ExportGridsToCsv()
 		{
-			string uifNo = DataExportProcessor.RetrieveCreatorUIFNumber(creatorDataGrid);
+			var creators = DataGridViewToModelMapping.GetCreatorsFromGrid(creatorDataGrid);
+			var employees = DataGridViewToModelMapping.GetEmployeesFromGrid(employeeDataGrid);
+			var employers = DataGridViewToModelMapping.GetEmployersFromGrid(employerDataGrid);
+
+			string uifNo = creators.FirstOrDefault()?.CreatorUIFReferenceNo ?? "";
 			using (var sfd = new SaveFileDialog
 			{
 				Filter = "CSV files (*.csv)|*.csv",
@@ -238,7 +243,7 @@ namespace UIFRecordApp
 				{
 					using (var sw = new StreamWriter(sfd.FileName))
 					{
-						var result = DataExportProcessor.Process(creatorDataGrid, employeeDataGrid, employerDataGrid);
+						var result = DataExportProcessor.Process(creators, employees, employers);
 						foreach (var line in result)
 						{
 							sw.WriteLine(line);
@@ -314,7 +319,7 @@ namespace UIFRecordApp
 			EnsureCreatorDataGridHasOneRow();
 		}
 
-		private void importToolStripMenuItem_Click(object sender, EventArgs e)
+		private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (creatorDataGrid.Rows.Count > 1 || employeeDataGrid.Rows.Count > 1 || employerDataGrid.Rows.Count > 1)
 			{
@@ -335,13 +340,20 @@ namespace UIFRecordApp
 				{
 					try
 					{
-						DataImportProcessor.PopulateGridsFromCsv(
-							ofd.FileName,
-							creatorDataGrid,
-							employeeDataGrid,
-							employerDataGrid
-						);
+						var lines = File.ReadAllLines(ofd.FileName)
+							.Where(l => !string.IsNullOrWhiteSpace(l))
+							.ToArray();
+
+						if (lines.Length > 0)
+						{
+							var importResult = DataImportProcessor.ImportModelsFromCsv(lines);
+							ModelToDataGridViewMapping.PopulateCreatorGrid(creatorDataGrid, importResult.Creators);
+							ModelToDataGridViewMapping.PopulateEmployeeGrid(employeeDataGrid, importResult.Employees);
+							ModelToDataGridViewMapping.PopulateEmployerGrid(employerDataGrid, importResult.Employers);
+						}
+
 						EnsureCreatorDataGridHasOneRow();
+
 						MessageBox.Show("Import successful!", "CSV Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
 					}
 					catch (Exception ex)
@@ -665,7 +677,7 @@ namespace UIFRecordApp
 			MessageBox.Show(aboutText, "About UIF Record App", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
-		private void exitMenuItem_Click(object sender, EventArgs e)
+		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
 			Application.Exit();
 		}

@@ -2,6 +2,7 @@
 {
 	public class Employee
 	{
+		public int EmployerID { get; set; }
 		public string RecordType { get; set; } = "UIWK";
 		public string EmployeeUIFReferenceNo { get; set; } = string.Empty;
 		public string IDNumber { get; set; } = string.Empty;

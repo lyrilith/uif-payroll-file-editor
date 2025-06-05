@@ -1,4 +1,4 @@
-﻿namespace UIFRecordApp.ColumnDeclarations
+﻿namespace Core.ColumnDeclarations
 {
 	public static class EmployerColumns
 	{
