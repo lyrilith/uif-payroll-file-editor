@@ -60,19 +60,6 @@
 			creatorTab = new TabPage();
 			employeeTab = new TabPage();
 			employeeDataGrid = new DataGridView();
-			employerTab = new TabPage();
-			menuStrip1 = new MenuStrip();
-			fileMenuItem = new ToolStripMenuItem();
-			toolStripSeparator1 = new ToolStripSeparator();
-			newMenuItem = new ToolStripMenuItem();
-			openMenuItem = new ToolStripMenuItem();
-			toolStripSeparator2 = new ToolStripSeparator();
-			saveMenuItem = new ToolStripMenuItem();
-			toolStripSeparator3 = new ToolStripSeparator();
-			exitMenuItem = new ToolStripMenuItem();
-			helpMenuItem = new ToolStripMenuItem();
-			aboutMenuItem = new ToolStripMenuItem();
-			backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
 			EmployeeEmployerID = new DataGridViewTextBoxColumn();
 			EmployeeUIFReferenceNo = new DataGridViewTextBoxColumn();
 			IDNumber = new DataGridViewTextBoxColumn();
@@ -91,6 +78,19 @@
 			BankBranchCode = new DataGridViewTextBoxColumn();
 			BankAccountNo = new DataGridViewTextBoxColumn();
 			BankAccountType = new DataGridViewComboBoxColumn();
+			employerTab = new TabPage();
+			menuStrip1 = new MenuStrip();
+			fileMenuItem = new ToolStripMenuItem();
+			toolStripSeparator1 = new ToolStripSeparator();
+			newMenuItem = new ToolStripMenuItem();
+			openMenuItem = new ToolStripMenuItem();
+			toolStripSeparator2 = new ToolStripSeparator();
+			saveMenuItem = new ToolStripMenuItem();
+			toolStripSeparator3 = new ToolStripSeparator();
+			exitMenuItem = new ToolStripMenuItem();
+			helpMenuItem = new ToolStripMenuItem();
+			aboutMenuItem = new ToolStripMenuItem();
+			backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
 			((System.ComponentModel.ISupportInitialize)creatorDataGrid).BeginInit();
 			((System.ComponentModel.ISupportInitialize)employerDataGrid).BeginInit();
 			tabControl.SuspendLayout();
@@ -302,95 +302,6 @@
 			employeeDataGrid.Size = new Size(1505, 610);
 			employeeDataGrid.TabIndex = 1;
 			// 
-			// employerTab
-			// 
-			employerTab.Controls.Add(employerDataGrid);
-			employerTab.Location = new Point(4, 29);
-			employerTab.Name = "employerTab";
-			employerTab.Padding = new Padding(3);
-			employerTab.Size = new Size(1511, 616);
-			employerTab.TabIndex = 2;
-			employerTab.Text = "Employer";
-			employerTab.UseVisualStyleBackColor = true;
-			// 
-			// menuStrip1
-			// 
-			menuStrip1.BackColor = SystemColors.MenuBar;
-			menuStrip1.ImageScalingSize = new Size(20, 20);
-			menuStrip1.Items.AddRange(new ToolStripItem[] { fileMenuItem, helpMenuItem });
-			menuStrip1.Location = new Point(0, 0);
-			menuStrip1.Name = "menuStrip1";
-			menuStrip1.Size = new Size(1519, 28);
-			menuStrip1.TabIndex = 4;
-			// 
-			// fileMenuItem
-			// 
-			fileMenuItem.DropDownItems.AddRange(new ToolStripItem[] { toolStripSeparator1, newMenuItem, openMenuItem, toolStripSeparator2, saveMenuItem, toolStripSeparator3, exitMenuItem });
-			fileMenuItem.Name = "fileMenuItem";
-			fileMenuItem.Size = new Size(46, 24);
-			fileMenuItem.Text = "&File";
-			// 
-			// toolStripSeparator1
-			// 
-			toolStripSeparator1.Name = "toolStripSeparator1";
-			toolStripSeparator1.Size = new Size(178, 6);
-			// 
-			// newMenuItem
-			// 
-			newMenuItem.Name = "newMenuItem";
-			newMenuItem.ShortcutKeys = Keys.Control | Keys.N;
-			newMenuItem.Size = new Size(181, 26);
-			newMenuItem.Text = "&New";
-			newMenuItem.Click += newToolStripMenuItem_Click;
-			// 
-			// openMenuItem
-			// 
-			openMenuItem.Name = "openMenuItem";
-			openMenuItem.ShortcutKeys = Keys.Control | Keys.O;
-			openMenuItem.Size = new Size(181, 26);
-			openMenuItem.Text = "&Open";
-			openMenuItem.Click += OpenToolStripMenuItem_Click;
-			// 
-			// toolStripSeparator2
-			// 
-			toolStripSeparator2.Name = "toolStripSeparator2";
-			toolStripSeparator2.Size = new Size(178, 6);
-			// 
-			// saveMenuItem
-			// 
-			saveMenuItem.Name = "saveMenuItem";
-			saveMenuItem.ShortcutKeys = Keys.Control | Keys.S;
-			saveMenuItem.Size = new Size(181, 26);
-			saveMenuItem.Text = "&Save";
-			saveMenuItem.Click += SaveMenuButton_Click;
-			// 
-			// toolStripSeparator3
-			// 
-			toolStripSeparator3.Name = "toolStripSeparator3";
-			toolStripSeparator3.Size = new Size(178, 6);
-			// 
-			// exitMenuItem
-			// 
-			exitMenuItem.Name = "exitMenuItem";
-			exitMenuItem.ShortcutKeys = Keys.Alt | Keys.F4;
-			exitMenuItem.Size = new Size(181, 26);
-			exitMenuItem.Text = "E&xit";
-			exitMenuItem.Click += ExitMenuItem_Click;
-			// 
-			// helpMenuItem
-			// 
-			helpMenuItem.DropDownItems.AddRange(new ToolStripItem[] { aboutMenuItem });
-			helpMenuItem.Name = "helpMenuItem";
-			helpMenuItem.Size = new Size(55, 24);
-			helpMenuItem.Text = "&Help";
-			// 
-			// aboutMenuItem
-			// 
-			aboutMenuItem.Name = "aboutMenuItem";
-			aboutMenuItem.Size = new Size(133, 26);
-			aboutMenuItem.Text = "About";
-			aboutMenuItem.Click += aboutMenuItem_Click;
-			// 
 			// EmployeeEmployerID
 			// 
 			EmployeeEmployerID.HeaderText = "EmployerID";
@@ -562,7 +473,96 @@
 			BankAccountType.Name = "BankAccountType";
 			BankAccountType.Width = 132;
 			// 
-			// PayrollConverterApp
+			// employerTab
+			// 
+			employerTab.Controls.Add(employerDataGrid);
+			employerTab.Location = new Point(4, 29);
+			employerTab.Name = "employerTab";
+			employerTab.Padding = new Padding(3);
+			employerTab.Size = new Size(1511, 616);
+			employerTab.TabIndex = 2;
+			employerTab.Text = "Employer";
+			employerTab.UseVisualStyleBackColor = true;
+			// 
+			// menuStrip1
+			// 
+			menuStrip1.BackColor = SystemColors.MenuBar;
+			menuStrip1.ImageScalingSize = new Size(20, 20);
+			menuStrip1.Items.AddRange(new ToolStripItem[] { fileMenuItem, helpMenuItem });
+			menuStrip1.Location = new Point(0, 0);
+			menuStrip1.Name = "menuStrip1";
+			menuStrip1.Size = new Size(1519, 28);
+			menuStrip1.TabIndex = 4;
+			// 
+			// fileMenuItem
+			// 
+			fileMenuItem.DropDownItems.AddRange(new ToolStripItem[] { toolStripSeparator1, newMenuItem, openMenuItem, toolStripSeparator2, saveMenuItem, toolStripSeparator3, exitMenuItem });
+			fileMenuItem.Name = "fileMenuItem";
+			fileMenuItem.Size = new Size(46, 24);
+			fileMenuItem.Text = "&File";
+			// 
+			// toolStripSeparator1
+			// 
+			toolStripSeparator1.Name = "toolStripSeparator1";
+			toolStripSeparator1.Size = new Size(178, 6);
+			// 
+			// newMenuItem
+			// 
+			newMenuItem.Name = "newMenuItem";
+			newMenuItem.ShortcutKeys = Keys.Control | Keys.N;
+			newMenuItem.Size = new Size(181, 26);
+			newMenuItem.Text = "&New";
+			newMenuItem.Click += newToolStripMenuItem_Click;
+			// 
+			// openMenuItem
+			// 
+			openMenuItem.Name = "openMenuItem";
+			openMenuItem.ShortcutKeys = Keys.Control | Keys.O;
+			openMenuItem.Size = new Size(181, 26);
+			openMenuItem.Text = "&Open";
+			openMenuItem.Click += OpenToolStripMenuItem_Click;
+			// 
+			// toolStripSeparator2
+			// 
+			toolStripSeparator2.Name = "toolStripSeparator2";
+			toolStripSeparator2.Size = new Size(178, 6);
+			// 
+			// saveMenuItem
+			// 
+			saveMenuItem.Name = "saveMenuItem";
+			saveMenuItem.ShortcutKeys = Keys.Control | Keys.S;
+			saveMenuItem.Size = new Size(181, 26);
+			saveMenuItem.Text = "&Save";
+			saveMenuItem.Click += SaveMenuButton_Click;
+			// 
+			// toolStripSeparator3
+			// 
+			toolStripSeparator3.Name = "toolStripSeparator3";
+			toolStripSeparator3.Size = new Size(178, 6);
+			// 
+			// exitMenuItem
+			// 
+			exitMenuItem.Name = "exitMenuItem";
+			exitMenuItem.ShortcutKeys = Keys.Alt | Keys.F4;
+			exitMenuItem.Size = new Size(181, 26);
+			exitMenuItem.Text = "E&xit";
+			exitMenuItem.Click += ExitMenuItem_Click;
+			// 
+			// helpMenuItem
+			// 
+			helpMenuItem.DropDownItems.AddRange(new ToolStripItem[] { aboutMenuItem });
+			helpMenuItem.Name = "helpMenuItem";
+			helpMenuItem.Size = new Size(55, 24);
+			helpMenuItem.Text = "&Help";
+			// 
+			// aboutMenuItem
+			// 
+			aboutMenuItem.Name = "aboutMenuItem";
+			aboutMenuItem.Size = new Size(133, 26);
+			aboutMenuItem.Text = "About";
+			aboutMenuItem.Click += aboutMenuItem_Click;
+			// 
+			// UIFPayrollFileEditor
 			// 
 			AutoScaleDimensions = new SizeF(8F, 20F);
 			AutoScaleMode = AutoScaleMode.Font;
@@ -570,8 +570,8 @@
 			Controls.Add(tabControl);
 			Controls.Add(menuStrip1);
 			MainMenuStrip = menuStrip1;
-			Name = "PayrollConverterApp";
-			Text = "Form1";
+			Name = "UIFPayrollFileEditor";
+			Text = "UIF Payroll File Editor";
 			WindowState = FormWindowState.Maximized;
 			FormClosing += PayrollConverterApp_FormClosing;
 			((System.ComponentModel.ISupportInitialize)creatorDataGrid).EndInit();

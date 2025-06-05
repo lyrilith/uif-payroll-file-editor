@@ -209,7 +209,7 @@ namespace UIFRecordApp
 		{
 			if (creatorDataGrid.Rows.Count <= 1 && employeeDataGrid.Rows.Count <= 1 && employerDataGrid.Rows.Count <= 1)
 			{
-				MessageBox.Show("No data to export.", "CSV Export", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				MessageBox.Show("No data to export.", "File Export", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				return;
 			}
 
@@ -234,9 +234,8 @@ namespace UIFRecordApp
 			string uifNo = creators.FirstOrDefault()?.CreatorUIFReferenceNo ?? "";
 			using (var sfd = new SaveFileDialog
 			{
-				Filter = "CSV files (*.csv)|*.csv",
-				Title = "Export to CSV",
-				FileName = string.IsNullOrEmpty(uifNo) || uifNo.Length < 8 ? "CreatorUIFNo.FileNumber.csv" : string.Join("", uifNo.TakeLast(8)) + ".001.csv"
+				Title = "Export File",
+				FileName = string.IsNullOrEmpty(uifNo) || uifNo.Length < 8 ? "CreatorUIFNo.001" : string.Join("", uifNo.TakeLast(8)) + ".001"
 			})
 			{
 				if (sfd.ShowDialog() == DialogResult.OK)
@@ -250,7 +249,7 @@ namespace UIFRecordApp
 						}
 					}
 
-					MessageBox.Show("Export successful!", "CSV Export", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					MessageBox.Show("Export successful!", "File Export", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				}
 			}
 		}
@@ -332,10 +331,10 @@ namespace UIFRecordApp
 
 			using (var ofd = new OpenFileDialog
 			{
-				Filter = "CSV files (*.csv)|*.csv",
-				Title = "Import from CSV"
+				Title = "Import from File"
 			})
 			{
+				//TODO: File validation
 				if (ofd.ShowDialog() == DialogResult.OK)
 				{
 					try
@@ -354,11 +353,11 @@ namespace UIFRecordApp
 
 						EnsureCreatorDataGridHasOneRow();
 
-						MessageBox.Show("Import successful!", "CSV Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
+						MessageBox.Show("Import successful!", "File Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
 					}
 					catch (Exception ex)
 					{
-						MessageBox.Show($"Import failed: {ex.Message}", "CSV Import", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						MessageBox.Show($"Import failed: {ex.Message}", "File Import", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					}
 				}
 			}
