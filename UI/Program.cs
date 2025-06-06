@@ -1,4 +1,4 @@
-namespace UIFRecordApp
+namespace UI
 {
     internal static class Program
     {

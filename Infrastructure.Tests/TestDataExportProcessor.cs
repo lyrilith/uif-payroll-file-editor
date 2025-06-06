@@ -11,7 +11,7 @@ namespace Infrastructure.Tests
 		public void Process_EmptyLists_ReturnsEmptyArray()
 		{
 			var result = DataExportProcessor.Process(
-				Enumerable.Empty<Creator>(),
+				null,
 				Enumerable.Empty<Employee>(),
 				Enumerable.Empty<Employer>());
 
@@ -22,16 +22,13 @@ namespace Infrastructure.Tests
 		[Test]
 		public void Process_SingleCreatorEmployeeEmployer_ExportsCorrectly()
 		{
-			var creators = new List<Creator>
+			var creator = new Creator
 			{
-				new Creator
-				{
-					CreatorUIFReferenceNo = "123456789",
-					ContactPerson = "John Doe",
-					ContactTelephoneNo = "0123456789",
-					ContactEmailAddress = "john@example.com",
-					PayrollMonth = "202406"
-				}
+				CreatorUIFReferenceNo = "123456789",
+				ContactPerson = "John Doe",
+				ContactTelephoneNo = "0123456789",
+				ContactEmailAddress = "john@example.com",
+				PayrollMonth = new DateTime(2024, 06, 03)
 			};
 			var employees = new List<Employee>
 			{
@@ -66,12 +63,12 @@ namespace Infrastructure.Tests
 				}
 			};
 
-			var result = DataExportProcessor.Process(creators, employees, employers);
+			var result = DataExportProcessor.Process(creator, employees, employers);
 
 			Assert.That(result, Is.Not.Null);
 			Assert.That(result.Length, Is.EqualTo(3)); // 1 creator + 1 employee (employer row is not output until next employee/employer)
 
-			Assert.That(result[0], Does.Contain("8000").And.Contain("123456789"));
+			Assert.That(result[0], Does.Contain("8000").And.Contain("123456789").And.EndsWith("202406"));
 			Assert.That(result[1], Does.Contain("8001").And.Contain("987654321"));
 			Assert.That(result[2], Does.Contain("8002").And.Contain("111222333"));
 		}
@@ -79,10 +76,7 @@ namespace Infrastructure.Tests
 		[Test]
 		public void Process_MultipleEmployeesAndEmployers_ExportsInOrder()
 		{
-			var creators = new List<Creator>
-			{
-				new Creator { CreatorUIFReferenceNo = "123456789" }
-			};
+			var creator = new Creator { CreatorUIFReferenceNo = "123456789" };
 			var employees = new List<Employee>
 			{
 				new Employee { EmployerID = 1, EmployeeUIFReferenceNo = "E1" },
@@ -94,7 +88,7 @@ namespace Infrastructure.Tests
 				new Employer { EmployerID = 2, EmployerUIFReferenceNo = "EMP2" }
 			};
 
-			var result = DataExportProcessor.Process(creators, employees, employers);
+			var result = DataExportProcessor.Process(creator, employees, employers);
 
 			// Should be: creator, employee1, employer1, employee2, employer2
 			Assert.That(result.Length, Is.EqualTo(5));
@@ -108,10 +102,7 @@ namespace Infrastructure.Tests
 		[Test]
 		public void Process_ZeroAmounts_ExcludesAmountFields()
 		{
-			var creators = new List<Creator>
-			{
-				new Creator { CreatorUIFReferenceNo = "123456789" }
-			};
+			var creator = new Creator { CreatorUIFReferenceNo = "123456789" };
 			var employees = new List<Employee>
 			{
 				new Employee
@@ -135,7 +126,7 @@ namespace Infrastructure.Tests
 				}
 			};
 
-			var result = DataExportProcessor.Process(creators, employees, employers);
+			var result = DataExportProcessor.Process(creator, employees, employers);
 
 			// Amount fields should not be present (no "8300", "8310", "8320", "8130", "8135", "8140")
 			Assert.That(result[1], Does.Not.Contain("8300").And.Not.Contain("8310").And.Not.Contain("8320"));
@@ -145,10 +136,7 @@ namespace Infrastructure.Tests
 		[Test]
 		public void Process_ZeroFillStringFields_PadsCorrectly()
 		{
-			var creators = new List<Creator>
-			{
-				new Creator { CreatorUIFReferenceNo = "1" }
-			};
+			var creator = new Creator { CreatorUIFReferenceNo = "1" };
 			var employees = new List<Employee>
 			{
 				new Employee { EmployerID = 1, EmployeeUIFReferenceNo = "2" }
@@ -158,7 +146,7 @@ namespace Infrastructure.Tests
 				new Employer { EmployerID = 1, EmployerUIFReferenceNo = "3" }
 			};
 
-			var result = DataExportProcessor.Process(creators, employees, employers);
+			var result = DataExportProcessor.Process(creator, employees, employers);
 
 			// CreatorUIFReferenceNo, EmployeeUIFReferenceNo, EmployerUIFReferenceNo should be zero-padded to 9 digits
 			Assert.That(result[0], Does.Contain("\"000000001\""));

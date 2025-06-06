@@ -10,6 +10,6 @@
 		public string ContactPerson { get; set; } = string.Empty;
 		public string ContactTelephoneNo { get; set; } = string.Empty;
 		public string ContactEmailAddress { get; set; } = string.Empty;
-		public string PayrollMonth { get; set; } = string.Empty;
+		public DateTime PayrollMonth { get; set; } = DateTime.Today;
 	}
 }

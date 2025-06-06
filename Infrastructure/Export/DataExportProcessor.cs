@@ -7,21 +7,18 @@ namespace Infrastructure.Export
 	public class DataExportProcessor
 	{
 		public static string[] Process(
-			IEnumerable<Creator> creators,
+			Creator creator,
 			IEnumerable<Employee> employees,
 			IEnumerable<Employer> employers)
 		{
-			return GetCreatorRows(creators)
+			return GetCreatorRow(creator)
 				.Concat(GetEmployeeEmployerRows(employees, employers))
 				.ToArray();
 		}
 
-		private static IEnumerable<string> GetCreatorRows(IEnumerable<Creator> creators)
+		private static IEnumerable<string> GetCreatorRow(Creator creator)
 		{
-			foreach (var creator in creators)
-			{
-				yield return FormatRow(creator, CreatorColumns.Columns);
-			}
+			return creator == null ? [] : [FormatRow(creator, CreatorColumns.Columns)];
 		}
 
 		private static IEnumerable<string> GetEmployeeEmployerRows(IEnumerable<Employee> employees, IEnumerable<Employer> employers)
@@ -90,7 +87,6 @@ namespace Infrastructure.Export
 				case ColumnType.Numeric:
 					return value.ToString();
 				default:
-					// Handle zero fill for string values
 					if (value is string s)
 					{
 						if (col.ZeroFillFromLeft && col.MaxDigits > 0)

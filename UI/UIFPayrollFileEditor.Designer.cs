@@ -1,8 +1,4 @@
-﻿namespace UIFRecordApp
-// ...existing code...
-// Ensure the EmploymentStatus column is a DataGridViewComboBoxColumn and named "EmploymentStatus"
-// No changes needed here if already set up as a ComboBox column with the correct name.
-// ...existing code...
+﻿namespace UI
 {
 	partial class UIFPayrollFileEditor
 	{
@@ -38,15 +34,8 @@
 			DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
 			DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
 			DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
-			DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UIFPayrollFileEditor));
-			DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
-			creatorDataGrid = new DataGridView();
-			CreatorUIFReferenceNo = new DataGridViewTextBoxColumn();
-			ContactPerson = new DataGridViewTextBoxColumn();
-			ContactTelephoneNo = new DataGridViewTextBoxColumn();
-			ContactEmailAddress = new DataGridViewTextBoxColumn();
-			PayrollMonth = new DataGridViewTextBoxColumn();
+			DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
 			employerDataGrid = new DataGridView();
 			EmployerID = new DataGridViewTextBoxColumn();
 			EmployerUIFReferenceNo = new DataGridViewTextBoxColumn();
@@ -58,6 +47,17 @@
 			EmployerEmailAddress = new DataGridViewTextBoxColumn();
 			tabControl = new TabControl();
 			creatorTab = new TabPage();
+			tableLayoutPanel1 = new TableLayoutPanel();
+			payrollMonthDatePicker = new DateTimePicker();
+			contactTelephoneNoLabel = new Label();
+			uifReferenceNoLabel = new Label();
+			contactPersonLabel = new Label();
+			contactEmailAddressLabel = new Label();
+			payrollMonthLabel = new Label();
+			uifReferenceNoTextBox = new TextBox();
+			contactPersonTextBox = new TextBox();
+			contactTelephoneNoTextBox = new TextBox();
+			contactEmailAddressTextBox = new TextBox();
 			employeeTab = new TabPage();
 			employeeDataGrid = new DataGridView();
 			EmployeeEmployerID = new DataGridViewTextBoxColumn();
@@ -91,76 +91,15 @@
 			helpMenuItem = new ToolStripMenuItem();
 			aboutMenuItem = new ToolStripMenuItem();
 			backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-			((System.ComponentModel.ISupportInitialize)creatorDataGrid).BeginInit();
 			((System.ComponentModel.ISupportInitialize)employerDataGrid).BeginInit();
 			tabControl.SuspendLayout();
 			creatorTab.SuspendLayout();
+			tableLayoutPanel1.SuspendLayout();
 			employeeTab.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)employeeDataGrid).BeginInit();
 			employerTab.SuspendLayout();
 			menuStrip1.SuspendLayout();
 			SuspendLayout();
-			// 
-			// creatorDataGrid
-			// 
-			creatorDataGrid.AllowUserToAddRows = false;
-			creatorDataGrid.AllowUserToDeleteRows = false;
-			creatorDataGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			creatorDataGrid.Columns.AddRange(new DataGridViewColumn[] { CreatorUIFReferenceNo, ContactPerson, ContactTelephoneNo, ContactEmailAddress, PayrollMonth });
-			creatorDataGrid.Dock = DockStyle.Top;
-			creatorDataGrid.Location = new Point(3, 3);
-			creatorDataGrid.Name = "creatorDataGrid";
-			creatorDataGrid.RowHeadersWidth = 51;
-			creatorDataGrid.Size = new Size(1505, 60);
-			creatorDataGrid.TabIndex = 0;
-			// 
-			// CreatorUIFReferenceNo
-			// 
-			CreatorUIFReferenceNo.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-			CreatorUIFReferenceNo.HeaderText = "UIFReferenceNo";
-			CreatorUIFReferenceNo.MaxInputLength = 9;
-			CreatorUIFReferenceNo.MinimumWidth = 6;
-			CreatorUIFReferenceNo.Name = "CreatorUIFReferenceNo";
-			CreatorUIFReferenceNo.Width = 145;
-			// 
-			// ContactPerson
-			// 
-			ContactPerson.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-			ContactPerson.HeaderText = "ContactPerson";
-			ContactPerson.MaxInputLength = 30;
-			ContactPerson.MinimumWidth = 6;
-			ContactPerson.Name = "ContactPerson";
-			ContactPerson.Width = 132;
-			// 
-			// ContactTelephoneNo
-			// 
-			ContactTelephoneNo.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-			ContactTelephoneNo.HeaderText = "ContactTelephoneNo";
-			ContactTelephoneNo.MaxInputLength = 16;
-			ContactTelephoneNo.MinimumWidth = 6;
-			ContactTelephoneNo.Name = "ContactTelephoneNo";
-			ContactTelephoneNo.Width = 178;
-			// 
-			// ContactEmailAddress
-			// 
-			ContactEmailAddress.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-			ContactEmailAddress.HeaderText = "ContactEmailAddress";
-			ContactEmailAddress.MaxInputLength = 50;
-			ContactEmailAddress.MinimumWidth = 6;
-			ContactEmailAddress.Name = "ContactEmailAddress";
-			ContactEmailAddress.ToolTipText = "Confirmation of receipt of the submission will be sent to this email address. If left blank, the confirmation will be sent to the email address of the sender of the email.";
-			ContactEmailAddress.Width = 179;
-			// 
-			// PayrollMonth
-			// 
-			PayrollMonth.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-			dataGridViewCellStyle1.Format = "yyyyMM";
-			dataGridViewCellStyle1.NullValue = null;
-			PayrollMonth.DefaultCellStyle = dataGridViewCellStyle1;
-			PayrollMonth.HeaderText = "PayrollMonth";
-			PayrollMonth.MinimumWidth = 6;
-			PayrollMonth.Name = "PayrollMonth";
-			PayrollMonth.Width = 125;
 			// 
 			// employerDataGrid
 			// 
@@ -202,10 +141,10 @@
 			// TotalGrossTaxableRemuneration
 			// 
 			TotalGrossTaxableRemuneration.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-			dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleRight;
-			dataGridViewCellStyle2.Format = "N2";
-			dataGridViewCellStyle2.NullValue = null;
-			TotalGrossTaxableRemuneration.DefaultCellStyle = dataGridViewCellStyle2;
+			dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleRight;
+			dataGridViewCellStyle1.Format = "N2";
+			dataGridViewCellStyle1.NullValue = null;
+			TotalGrossTaxableRemuneration.DefaultCellStyle = dataGridViewCellStyle1;
 			TotalGrossTaxableRemuneration.HeaderText = "TotalGrossTaxableRemuneration";
 			TotalGrossTaxableRemuneration.MinimumWidth = 6;
 			TotalGrossTaxableRemuneration.Name = "TotalGrossTaxableRemuneration";
@@ -214,10 +153,10 @@
 			// TotalGrossRemunerationSubjectToUIF
 			// 
 			TotalGrossRemunerationSubjectToUIF.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-			dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleRight;
-			dataGridViewCellStyle3.Format = "N2";
-			dataGridViewCellStyle3.NullValue = null;
-			TotalGrossRemunerationSubjectToUIF.DefaultCellStyle = dataGridViewCellStyle3;
+			dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleRight;
+			dataGridViewCellStyle2.Format = "N2";
+			dataGridViewCellStyle2.NullValue = null;
+			TotalGrossRemunerationSubjectToUIF.DefaultCellStyle = dataGridViewCellStyle2;
 			TotalGrossRemunerationSubjectToUIF.HeaderText = "TotalGrossRemunerationSubjectToUIF";
 			TotalGrossRemunerationSubjectToUIF.MinimumWidth = 6;
 			TotalGrossRemunerationSubjectToUIF.Name = "TotalGrossRemunerationSubjectToUIF";
@@ -226,10 +165,10 @@
 			// TotalContributions
 			// 
 			TotalContributions.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-			dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleRight;
-			dataGridViewCellStyle4.Format = "N2";
-			dataGridViewCellStyle4.NullValue = null;
-			TotalContributions.DefaultCellStyle = dataGridViewCellStyle4;
+			dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleRight;
+			dataGridViewCellStyle3.Format = "N2";
+			dataGridViewCellStyle3.NullValue = null;
+			TotalContributions.DefaultCellStyle = dataGridViewCellStyle3;
 			TotalContributions.HeaderText = "TotalContributions";
 			TotalContributions.MinimumWidth = 6;
 			TotalContributions.Name = "TotalContributions";
@@ -238,10 +177,10 @@
 			// TotalEmployees
 			// 
 			TotalEmployees.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
-			dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleRight;
-			dataGridViewCellStyle5.Format = "N0";
-			dataGridViewCellStyle5.NullValue = null;
-			TotalEmployees.DefaultCellStyle = dataGridViewCellStyle5;
+			dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleRight;
+			dataGridViewCellStyle4.Format = "N0";
+			dataGridViewCellStyle4.NullValue = null;
+			TotalEmployees.DefaultCellStyle = dataGridViewCellStyle4;
 			TotalEmployees.HeaderText = "TotalEmployees";
 			TotalEmployees.MaxInputLength = 15;
 			TotalEmployees.MinimumWidth = 6;
@@ -271,7 +210,7 @@
 			// 
 			// creatorTab
 			// 
-			creatorTab.Controls.Add(creatorDataGrid);
+			creatorTab.Controls.Add(tableLayoutPanel1);
 			creatorTab.Location = new Point(4, 29);
 			creatorTab.Name = "creatorTab";
 			creatorTab.Padding = new Padding(3);
@@ -279,6 +218,122 @@
 			creatorTab.TabIndex = 0;
 			creatorTab.Text = "Creator";
 			creatorTab.UseVisualStyleBackColor = true;
+			// 
+			// tableLayoutPanel1
+			// 
+			tableLayoutPanel1.ColumnCount = 2;
+			tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+			tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+			tableLayoutPanel1.Controls.Add(payrollMonthDatePicker, 1, 4);
+			tableLayoutPanel1.Controls.Add(contactTelephoneNoLabel, 0, 2);
+			tableLayoutPanel1.Controls.Add(uifReferenceNoLabel, 0, 0);
+			tableLayoutPanel1.Controls.Add(contactPersonLabel, 0, 1);
+			tableLayoutPanel1.Controls.Add(contactEmailAddressLabel, 0, 3);
+			tableLayoutPanel1.Controls.Add(payrollMonthLabel, 0, 4);
+			tableLayoutPanel1.Controls.Add(uifReferenceNoTextBox, 1, 0);
+			tableLayoutPanel1.Controls.Add(contactPersonTextBox, 1, 1);
+			tableLayoutPanel1.Controls.Add(contactTelephoneNoTextBox, 1, 2);
+			tableLayoutPanel1.Controls.Add(contactEmailAddressTextBox, 1, 3);
+			tableLayoutPanel1.Location = new Point(8, 6);
+			tableLayoutPanel1.Name = "tableLayoutPanel1";
+			tableLayoutPanel1.RowCount = 5;
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+			tableLayoutPanel1.Size = new Size(442, 200);
+			tableLayoutPanel1.TabIndex = 1;
+			// 
+			// payrollMonthDatePicker
+			// 
+			payrollMonthDatePicker.CustomFormat = "yyyy-MM";
+			payrollMonthDatePicker.Dock = DockStyle.Fill;
+			payrollMonthDatePicker.Format = DateTimePickerFormat.Custom;
+			payrollMonthDatePicker.Location = new Point(224, 163);
+			payrollMonthDatePicker.Name = "payrollMonthDatePicker";
+			payrollMonthDatePicker.ShowUpDown = true;
+			payrollMonthDatePicker.Size = new Size(215, 27);
+			payrollMonthDatePicker.TabIndex = 2;
+			payrollMonthDatePicker.Value = new DateTime(2025, 6, 1, 0, 0, 0, 0);
+			// 
+			// contactTelephoneNoLabel
+			// 
+			contactTelephoneNoLabel.AutoSize = true;
+			contactTelephoneNoLabel.Location = new Point(3, 80);
+			contactTelephoneNoLabel.Name = "contactTelephoneNoLabel";
+			contactTelephoneNoLabel.Size = new Size(157, 20);
+			contactTelephoneNoLabel.TabIndex = 2;
+			contactTelephoneNoLabel.Text = "Contact Telephone No";
+			// 
+			// uifReferenceNoLabel
+			// 
+			uifReferenceNoLabel.AutoSize = true;
+			uifReferenceNoLabel.Dock = DockStyle.Fill;
+			uifReferenceNoLabel.Location = new Point(3, 0);
+			uifReferenceNoLabel.Name = "uifReferenceNoLabel";
+			uifReferenceNoLabel.Size = new Size(215, 40);
+			uifReferenceNoLabel.TabIndex = 0;
+			uifReferenceNoLabel.Text = "UIF Reference No";
+			// 
+			// contactPersonLabel
+			// 
+			contactPersonLabel.AutoSize = true;
+			contactPersonLabel.Location = new Point(3, 40);
+			contactPersonLabel.Name = "contactPersonLabel";
+			contactPersonLabel.Size = new Size(107, 20);
+			contactPersonLabel.TabIndex = 1;
+			contactPersonLabel.Text = "Contact Person";
+			// 
+			// contactEmailAddressLabel
+			// 
+			contactEmailAddressLabel.AutoSize = true;
+			contactEmailAddressLabel.Location = new Point(3, 120);
+			contactEmailAddressLabel.Name = "contactEmailAddressLabel";
+			contactEmailAddressLabel.Size = new Size(158, 20);
+			contactEmailAddressLabel.TabIndex = 3;
+			contactEmailAddressLabel.Text = "Contact Email Address";
+			// 
+			// payrollMonthLabel
+			// 
+			payrollMonthLabel.AutoSize = true;
+			payrollMonthLabel.Location = new Point(3, 160);
+			payrollMonthLabel.Name = "payrollMonthLabel";
+			payrollMonthLabel.Size = new Size(100, 20);
+			payrollMonthLabel.TabIndex = 4;
+			payrollMonthLabel.Text = "Payroll Month";
+			// 
+			// uifReferenceNoTextBox
+			// 
+			uifReferenceNoTextBox.Dock = DockStyle.Fill;
+			uifReferenceNoTextBox.Location = new Point(224, 3);
+			uifReferenceNoTextBox.Name = "uifReferenceNoTextBox";
+			uifReferenceNoTextBox.Size = new Size(215, 27);
+			uifReferenceNoTextBox.TabIndex = 5;
+			// 
+			// contactPersonTextBox
+			// 
+			contactPersonTextBox.Dock = DockStyle.Fill;
+			contactPersonTextBox.Location = new Point(224, 43);
+			contactPersonTextBox.Name = "contactPersonTextBox";
+			contactPersonTextBox.Size = new Size(215, 27);
+			contactPersonTextBox.TabIndex = 6;
+			// 
+			// contactTelephoneNoTextBox
+			// 
+			contactTelephoneNoTextBox.Dock = DockStyle.Fill;
+			contactTelephoneNoTextBox.Location = new Point(224, 83);
+			contactTelephoneNoTextBox.Name = "contactTelephoneNoTextBox";
+			contactTelephoneNoTextBox.Size = new Size(215, 27);
+			contactTelephoneNoTextBox.TabIndex = 7;
+			// 
+			// contactEmailAddressTextBox
+			// 
+			contactEmailAddressTextBox.Dock = DockStyle.Fill;
+			contactEmailAddressTextBox.Location = new Point(224, 123);
+			contactEmailAddressTextBox.Name = "contactEmailAddressTextBox";
+			contactEmailAddressTextBox.Size = new Size(215, 27);
+			contactEmailAddressTextBox.TabIndex = 8;
 			// 
 			// employeeTab
 			// 
@@ -404,10 +459,10 @@
 			// 
 			// GrossTaxableRemuneration
 			// 
-			dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleRight;
-			dataGridViewCellStyle6.Format = "N2";
-			dataGridViewCellStyle6.NullValue = "0.00";
-			GrossTaxableRemuneration.DefaultCellStyle = dataGridViewCellStyle6;
+			dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleRight;
+			dataGridViewCellStyle5.Format = "N2";
+			dataGridViewCellStyle5.NullValue = "0.00";
+			GrossTaxableRemuneration.DefaultCellStyle = dataGridViewCellStyle5;
 			GrossTaxableRemuneration.HeaderText = "GrossTaxableRemuneration";
 			GrossTaxableRemuneration.MinimumWidth = 6;
 			GrossTaxableRemuneration.Name = "GrossTaxableRemuneration";
@@ -417,10 +472,10 @@
 			// RemunerationSubjectToUIF
 			// 
 			RemunerationSubjectToUIF.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-			dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleRight;
-			dataGridViewCellStyle7.Format = "N2";
-			dataGridViewCellStyle7.NullValue = "0.00";
-			RemunerationSubjectToUIF.DefaultCellStyle = dataGridViewCellStyle7;
+			dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleRight;
+			dataGridViewCellStyle6.Format = "N2";
+			dataGridViewCellStyle6.NullValue = "0.00";
+			RemunerationSubjectToUIF.DefaultCellStyle = dataGridViewCellStyle6;
 			RemunerationSubjectToUIF.HeaderText = "RemunerationSubjectToUIF";
 			RemunerationSubjectToUIF.MinimumWidth = 6;
 			RemunerationSubjectToUIF.Name = "RemunerationSubjectToUIF";
@@ -430,10 +485,10 @@
 			// UIFContribution
 			// 
 			UIFContribution.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-			dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleRight;
-			dataGridViewCellStyle8.Format = "N2";
-			dataGridViewCellStyle8.NullValue = "0.00";
-			UIFContribution.DefaultCellStyle = dataGridViewCellStyle8;
+			dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleRight;
+			dataGridViewCellStyle7.Format = "N2";
+			dataGridViewCellStyle7.NullValue = "0.00";
+			UIFContribution.DefaultCellStyle = dataGridViewCellStyle7;
 			UIFContribution.HeaderText = "UIFContribution";
 			UIFContribution.MinimumWidth = 6;
 			UIFContribution.Name = "UIFContribution";
@@ -574,10 +629,11 @@
 			Text = "UIF Payroll File Editor";
 			WindowState = FormWindowState.Maximized;
 			FormClosing += PayrollConverterApp_FormClosing;
-			((System.ComponentModel.ISupportInitialize)creatorDataGrid).EndInit();
 			((System.ComponentModel.ISupportInitialize)employerDataGrid).EndInit();
 			tabControl.ResumeLayout(false);
 			creatorTab.ResumeLayout(false);
+			tableLayoutPanel1.ResumeLayout(false);
+			tableLayoutPanel1.PerformLayout();
 			employeeTab.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)employeeDataGrid).EndInit();
 			employerTab.ResumeLayout(false);
@@ -852,7 +908,6 @@
 		}
 
 		#endregion
-		private DataGridView creatorDataGrid;
 		private DataGridView employerDataGrid;
 		private TabControl tabControl;
 		private TabPage creatorTab;
@@ -879,11 +934,6 @@
 		private ToolStripSeparator toolStripSeparator2;
 		private ToolStripSeparator toolStripSeparator3;
 		private ToolStripMenuItem exitMenuItem;
-		private DataGridViewTextBoxColumn CreatorUIFReferenceNo;
-		private DataGridViewTextBoxColumn ContactPerson;
-		private DataGridViewTextBoxColumn ContactTelephoneNo;
-		private DataGridViewTextBoxColumn ContactEmailAddress;
-		private DataGridViewTextBoxColumn PayrollMonth;
 		private DataGridViewTextBoxColumn EmployeeEmployerID;
 		private DataGridViewTextBoxColumn EmployeeUIFReferenceNo;
 		private DataGridViewTextBoxColumn IDNumber;
@@ -902,5 +952,16 @@
 		private DataGridViewTextBoxColumn BankBranchCode;
 		private DataGridViewTextBoxColumn BankAccountNo;
 		private DataGridViewComboBoxColumn BankAccountType;
+		private TableLayoutPanel tableLayoutPanel1;
+		private Label contactTelephoneNoLabel;
+		private Label uifReferenceNoLabel;
+		private Label contactPersonLabel;
+		private Label contactEmailAddressLabel;
+		private Label payrollMonthLabel;
+		private TextBox uifReferenceNoTextBox;
+		private TextBox contactPersonTextBox;
+		private TextBox contactTelephoneNoTextBox;
+		private TextBox contactEmailAddressTextBox;
+		private DateTimePicker payrollMonthDatePicker;
 	}
 }

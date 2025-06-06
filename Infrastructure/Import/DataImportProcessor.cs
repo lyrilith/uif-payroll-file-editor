@@ -5,7 +5,6 @@ namespace Infrastructure.Import
 {
 	public static class DataImportProcessor
 	{
-		// DTO to hold all imported data
 		public class ImportResult
 		{
 			public List<Creator> Creators { get; set; } = new();
@@ -13,9 +12,6 @@ namespace Infrastructure.Import
 			public List<Employer> Employers { get; set; } = new();
 		}
 
-		/// <summary>
-		/// Parses the CSV and returns lists of model objects.
-		/// </summary>
 		public static ImportResult ImportModelsFromCsv(string[] lines)
 		{
 			var creatorRows = new List<Dictionary<string, string>>();
@@ -47,8 +43,6 @@ namespace Infrastructure.Import
 			return result;
 		}
 
-		// --- Mapping helpers ---
-
 		private static Creator ToCreator(Dictionary<string, string> rowDict)
 		{
 			var c = new Creator();
@@ -62,12 +56,20 @@ namespace Infrastructure.Import
 						case nameof(Creator.ContactPerson): c.ContactPerson = val; break;
 						case nameof(Creator.ContactTelephoneNo): c.ContactTelephoneNo = val; break;
 						case nameof(Creator.ContactEmailAddress): c.ContactEmailAddress = val; break;
-						case nameof(Creator.PayrollMonth): c.PayrollMonth = val; break;
-							// Add other mappings as needed
+						case nameof(Creator.PayrollMonth): c.PayrollMonth = ParseShortDate(val); break;
 					}
 				}
 			}
 			return c;
+		}
+
+		private static DateTime ParseShortDate(string dateString)
+		{
+			if (DateTime.TryParseExact(dateString, "yyyyMM", null, System.Globalization.DateTimeStyles.None, out var date))
+			{
+				return date;
+			}
+			return DateTime.Today;
 		}
 
 		private static Employee ToEmployee(Dictionary<string, string> rowDict)
@@ -105,11 +107,10 @@ namespace Infrastructure.Import
 						case nameof(Employee.BankBranchCode): e.BankBranchCode = val; break;
 						case nameof(Employee.BankAccountNo): e.BankAccountNo = val; break;
 						case nameof(Employee.BankAccountType): e.BankAccountType = val; break;
-							// Add other mappings as needed
 					}
 				}
 			}
-			// EmployerID fallback if not set
+
 			if (e.EmployerID == 0 && rowDict.TryGetValue("00", out var employerIDValue))
 				e.EmployerID = int.TryParse(employerIDValue, out var id) ? id : 1;
 			return e;
@@ -142,17 +143,13 @@ namespace Infrastructure.Import
 							em.TotalEmployees = int.TryParse(val, out var te) ? te : 0;
 							break;
 						case nameof(Employer.EmployerEmailAddress): em.EmployerEmailAddress = val; break;
-							// Add other mappings as needed
 					}
 				}
 			}
-			// EmployerID fallback if not set
 			if (em.EmployerID == 0 && rowDict.TryGetValue("00", out var employerIDValue))
 				em.EmployerID = int.TryParse(employerIDValue, out var id) ? id : 1;
 			return em;
 		}
-
-		// --- CSV parsing helpers (unchanged) ---
 
 		private static Dictionary<string, string> ParseCsvLineToDict(string line, int employerCount)
 		{
@@ -189,8 +186,5 @@ namespace Infrastructure.Import
 			}
 			return result;
 		}
-
-		// UnformatValue can be kept if needed for value normalization, or removed if not required for model population.
-		// private static object UnformatValue(PayrollColumn column, string value) { ... }
 	}
 }

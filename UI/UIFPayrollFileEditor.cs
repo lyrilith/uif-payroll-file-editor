@@ -5,21 +5,21 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text.Json;
 
-namespace UIFRecordApp
+namespace UI
 {
 	public partial class UIFPayrollFileEditor : Form
 	{
 		private DateTimePicker datePicker;
-		private DateTimePicker monthPicker;
-		private readonly string[] dateColumns1 = ["PayrollMonth"];
-		private readonly string[] dateColumns2 = ["DateOfBirth", "DateEmployedFrom", "DateEmployedTo"];
+		private readonly string[] eployeeDateColumns = ["DateOfBirth", "DateEmployedFrom", "DateEmployedTo"];
 
 		private readonly BindingSource employmentStatusBindingSource = new();
 		private readonly BindingSource nonContributionReasonBindingSource = new();
 		private readonly BindingSource bankAccountTypeBindingSource = new();
 
-		private readonly string creatorGridPersistPath =
-			Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "UIFRecordApp", "creatorDataGrid.json");
+		private readonly string creatorFieldsPersistPath =
+			Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "UIFPayrollFileEditor", "creatorFields.json");
+
+		private CreatorFormControls creatorFormControls;
 
 		// Field to track the row index where the context menu was invoked
 		private int _contextMenuRowIndex = -1;
@@ -27,8 +27,19 @@ namespace UIFRecordApp
 		public UIFPayrollFileEditor()
 		{
 			InitializeComponent();
+
+			this.creatorFormControls = new CreatorFormControls
+			{
+				UIFReferenceNoTextBox = uifReferenceNoTextBox,
+				ContactPersonTextBox = contactPersonTextBox,
+				ContactTelephoneNoTextBox = contactTelephoneNoTextBox,
+				ContactEmailAddressTextBox = contactEmailAddressTextBox,
+				PayrollMonthDatePicker = payrollMonthDatePicker
+			};
+
+			ApplyNumericTextBoxHandlers(uifReferenceNoTextBox);
+
 			this.datePicker = CreateDatePicker();
-			this.monthPicker = CreateMonthPicker();
 
 			employmentStatusBindingSource.DataSource = Core.DataSources.EmploymentStatusDataSource.ToList();
 			var employmentStatusCol = employeeDataGrid.Columns["EmploymentStatus"] as DataGridViewComboBoxColumn;
@@ -87,16 +98,12 @@ namespace UIFRecordApp
 			employeeDataGrid.CellEndEdit += EmployeeDataGrid_CellEndEdit;
 
 			// Register EditingControlShowing for numeric-only columns
-			creatorDataGrid.EditingControlShowing += EmployeeDataGridView_EditingControlShowing;
 			employeeDataGrid.EditingControlShowing += EmployeeDataGridView_EditingControlShowing;
 			employerDataGrid.EditingControlShowing += EmployeeDataGridView_EditingControlShowing;
 
-			//creatorDataGrid.CellClick += CreatorDataGrid_CellClick;
-			creatorDataGrid.CellEnter += CreatorDataGrid_CellClick;
 			employeeDataGrid.CellEnter += EmployeeDataGrid_CellClick;
 
-			// Load persisted creatorDataGrid records if available
-			LoadCreatorDataGrid();
+			LoadCreatorFieldsFromTempFile();
 
 			// Add context menu for row deletion to all grids
 			AddDeleteRowContextMenu(employeeDataGrid);
@@ -117,20 +124,6 @@ namespace UIFRecordApp
 			employeeDataGrid.Controls.Add(datePicker);
 			SetupDatePickerEvents(employeeDataGrid, datePicker, "yyyy-MM-dd");
 			return datePicker;
-		}
-
-		private DateTimePicker CreateMonthPicker()
-		{
-			var monthPicker = new DateTimePicker
-			{
-				Format = DateTimePickerFormat.Custom,
-				CustomFormat = "yyyy-MM",        // Display only year and month
-				ShowUpDown = true,               // Use up/down buttons instead of calendar dropdown
-				Width = 100                      // Optional: adjust width
-			};
-			creatorDataGrid.Controls.Add(monthPicker);
-			SetupDatePickerEvents(creatorDataGrid, monthPicker, "yyyy-MM");
-			return monthPicker;
 		}
 
 		private void SetupDatePickerEvents(DataGridView dataGrid, DateTimePicker datePicker, string format)
@@ -167,28 +160,9 @@ namespace UIFRecordApp
 			};
 		}
 
-		private void CreatorDataGrid_CellClick(object? sender, DataGridViewCellEventArgs e)
-		{
-			if (dateColumns1.Contains(creatorDataGrid.Columns[e.ColumnIndex].Name))
-			{
-				Rectangle rect = creatorDataGrid.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
-				monthPicker.Size = rect.Size;
-				monthPicker.Location = rect.Location;
-				monthPicker.Visible = true;
-
-				var val = creatorDataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
-				if (DateTime.TryParse(val?.ToString(), out var dt))
-					monthPicker.Value = dt;
-				else
-					monthPicker.Value = DateTime.Today;
-
-				monthPicker.Focus();
-			}
-		}
-
 		private void EmployeeDataGrid_CellClick(object sender, DataGridViewCellEventArgs e)
 		{
-			if (dateColumns2.Contains(employeeDataGrid.Columns[e.ColumnIndex].Name))
+			if (eployeeDateColumns.Contains(employeeDataGrid.Columns[e.ColumnIndex].Name))
 			{
 				Rectangle rect = employeeDataGrid.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
 				datePicker.Size = rect.Size;
@@ -207,7 +181,7 @@ namespace UIFRecordApp
 
 		private void SaveMenuButton_Click(object sender, EventArgs e)
 		{
-			if (creatorDataGrid.Rows.Count <= 1 && employeeDataGrid.Rows.Count <= 1 && employerDataGrid.Rows.Count <= 1)
+			if (employeeDataGrid.Rows.Count <= 1 && employerDataGrid.Rows.Count <= 1)
 			{
 				MessageBox.Show("No data to export.", "File Export", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				return;
@@ -227,11 +201,11 @@ namespace UIFRecordApp
 
 		private void ExportGridsToCsv()
 		{
-			var creators = DataGridViewToModelMapping.GetCreatorsFromGrid(creatorDataGrid);
+			var creator = DataGridViewToModelMapping.GetCreatorFromFormFields(this.creatorFormControls);
 			var employees = DataGridViewToModelMapping.GetEmployeesFromGrid(employeeDataGrid);
 			var employers = DataGridViewToModelMapping.GetEmployersFromGrid(employerDataGrid);
 
-			string uifNo = creators.FirstOrDefault()?.CreatorUIFReferenceNo ?? "";
+			string uifNo = creator?.CreatorUIFReferenceNo ?? "";
 			using (var sfd = new SaveFileDialog
 			{
 				Title = "Export File",
@@ -242,7 +216,7 @@ namespace UIFRecordApp
 				{
 					using (var sw = new StreamWriter(sfd.FileName))
 					{
-						var result = DataExportProcessor.Process(creators, employees, employers);
+						var result = DataExportProcessor.Process(creator, employees, employers);
 						foreach (var line in result)
 						{
 							sw.WriteLine(line);
@@ -312,15 +286,13 @@ namespace UIFRecordApp
 
 		private void ClearGrids()
 		{
-			creatorDataGrid.Rows.Clear();
 			employeeDataGrid.Rows.Clear();
 			employerDataGrid.Rows.Clear();
-			EnsureCreatorDataGridHasOneRow();
 		}
 
 		private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (creatorDataGrid.Rows.Count > 1 || employeeDataGrid.Rows.Count > 1 || employerDataGrid.Rows.Count > 1)
+			if (employeeDataGrid.Rows.Count > 1 || employerDataGrid.Rows.Count > 1)
 			{
 				var confirmResult = MessageBox.Show("Are you sure you want to import data? This will clear all current data.",
 					"Import Data",
@@ -344,6 +316,7 @@ namespace UIFRecordApp
 						MessageBox.Show("Selected file must have an extension of three numeric digits (e.g., .001, .123).", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 						return;
 					}
+
 					try
 					{
 						var lines = File.ReadAllLines(ofd.FileName)
@@ -353,12 +326,10 @@ namespace UIFRecordApp
 						if (lines.Length > 0)
 						{
 							var importResult = DataImportProcessor.ImportModelsFromCsv(lines);
-							ModelToDataGridViewMapping.PopulateCreatorGrid(creatorDataGrid, importResult.Creators);
+							ModelToDataGridViewMapping.PopulateCreatorFields(this.creatorFormControls, importResult.Creators);
 							ModelToDataGridViewMapping.PopulateEmployeeGrid(employeeDataGrid, importResult.Employees);
 							ModelToDataGridViewMapping.PopulateEmployerGrid(employerDataGrid, importResult.Employers);
 						}
-
-						EnsureCreatorDataGridHasOneRow();
 
 						MessageBox.Show("Import successful!", "File Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
 					}
@@ -547,7 +518,6 @@ namespace UIFRecordApp
 					var colName = dgv.Columns[colIndex].Name;
 					var numericColumns = new[]
 					{
-						"CreatorUIFReferenceNo",
 						"EmployeeUIFReferenceNo",
 						"EmployerUIFReferenceNo",
 						"IDNumber",
@@ -577,6 +547,15 @@ namespace UIFRecordApp
 					}
 				}
 			}
+		}
+
+		private void ApplyNumericTextBoxHandlers(TextBox tb)
+		{
+			if (tb == null) return;
+			tb.KeyPress -= NumericTextBox_KeyPress;
+			tb.TextChanged -= NumericTextBox_TextChanged;
+			tb.KeyPress += NumericTextBox_KeyPress;
+			tb.TextChanged += NumericTextBox_TextChanged;
 		}
 
 		// Suppress non-digit key input
@@ -690,11 +669,10 @@ namespace UIFRecordApp
 
 		private void PayrollConverterApp_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			// Persist creatorDataGrid
-			SaveCreatorDataGrid();
+			SaveCreatorFieldsToTempFile();
 
 			// Save confirmation logic
-			if (creatorDataGrid.Rows.Count > 1 || employeeDataGrid.Rows.Count > 1 || employerDataGrid.Rows.Count > 1)
+			if (employeeDataGrid.Rows.Count > 1 || employerDataGrid.Rows.Count > 1)
 			{
 				var result = MessageBox.Show(
 				"Would you like to save your data before exiting?",
@@ -721,11 +699,9 @@ namespace UIFRecordApp
 			employeeDataGrid.CellEndEdit -= EmployeeDataGrid_CellEndEdit;
 
 			// Register EditingControlShowing for numeric-only columns
-			creatorDataGrid.EditingControlShowing -= EmployeeDataGridView_EditingControlShowing;
 			employeeDataGrid.EditingControlShowing -= EmployeeDataGridView_EditingControlShowing;
 			employerDataGrid.EditingControlShowing -= EmployeeDataGridView_EditingControlShowing;
 
-			creatorDataGrid.CellEnter -= CreatorDataGrid_CellClick;
 			employeeDataGrid.CellEnter -= EmployeeDataGrid_CellClick;
 
 			// Add context menu for row deletion to all grids
@@ -737,27 +713,34 @@ namespace UIFRecordApp
 			employerDataGrid.MouseDown -= DataGridView_MouseDown_SetContextRow;
 		}
 
-		private void LoadCreatorDataGrid()
+		private void LoadCreatorFieldsFromTempFile()
 		{
 			try
 			{
-				if (File.Exists(creatorGridPersistPath))
+				if (File.Exists(creatorFieldsPersistPath))
 				{
-					var json = File.ReadAllText(creatorGridPersistPath);
+					var json = File.ReadAllText(creatorFieldsPersistPath);
 					var rows = JsonSerializer.Deserialize<List<Dictionary<string, string>>>(json);
-					if (rows != null)
+					if (rows != null && rows.Count > 0)
 					{
-						creatorDataGrid.Rows.Clear();
-						foreach (var rowDict in rows)
-						{
-							int idx = creatorDataGrid.Rows.Add();
-							var row = creatorDataGrid.Rows[idx];
-							foreach (DataGridViewColumn col in creatorDataGrid.Columns)
-							{
-								if (rowDict.TryGetValue(col.Name, out var val))
-									row.Cells[col.Name].Value = val;
-							}
-						}
+						var rowDict = rows[0];
+
+						if (rowDict.TryGetValue("CreatorUIFReferenceNo", out var uifNo))
+							uifReferenceNoTextBox.Text = uifNo ?? "";
+
+						if (rowDict.TryGetValue("ContactPerson", out var contactPerson))
+							contactPersonTextBox.Text = contactPerson ?? "";
+
+						if (rowDict.TryGetValue("ContactTelephoneNo", out var contactTel))
+							contactTelephoneNoTextBox.Text = contactTel ?? "";
+
+						if (rowDict.TryGetValue("ContactEmailAddress", out var contactEmail))
+							contactEmailAddressTextBox.Text = contactEmail ?? "";
+
+						if (rowDict.TryGetValue("PayrollMonth", out var payrollMonth) && DateTime.TryParse(payrollMonth, out var dt))
+							payrollMonthDatePicker.Value = dt;
+						else
+							payrollMonthDatePicker.Value = DateTime.Today;
 					}
 				}
 			}
@@ -765,33 +748,29 @@ namespace UIFRecordApp
 			{
 				// Ignore errors, do not load if file is corrupt
 			}
-			finally
-			{
-				EnsureCreatorDataGridHasOneRow();
-			}
 		}
 
-		private void SaveCreatorDataGrid()
+		private void SaveCreatorFieldsToTempFile()
 		{
 			try
 			{
-				var rows = new List<Dictionary<string, string>>();
-				foreach (DataGridViewRow row in creatorDataGrid.Rows)
+				// Collect values from the creatorTab fields (textboxes and date picker)
+				var dict = new Dictionary<string, string>
 				{
-					if (row.IsNewRow) continue;
-					var dict = new Dictionary<string, string>();
-					foreach (DataGridViewColumn col in creatorDataGrid.Columns)
-					{
-						var val = row.Cells[col.Name].Value?.ToString() ?? "";
-						dict[col.Name] = val;
-					}
-					rows.Add(dict);
-				}
-				var dir = Path.GetDirectoryName(creatorGridPersistPath);
+					["CreatorUIFReferenceNo"] = uifReferenceNoTextBox.Text ?? "",
+					["ContactPerson"] = contactPersonTextBox.Text ?? "",
+					["ContactTelephoneNo"] = contactTelephoneNoTextBox.Text ?? "",
+					["ContactEmailAddress"] = contactEmailAddressTextBox.Text ?? "",
+					["PayrollMonth"] = payrollMonthDatePicker.Value.ToString("yyyy-MM-dd")
+				};
+
+				var rows = new List<Dictionary<string, string>> { dict };
+
+				var dir = Path.GetDirectoryName(creatorFieldsPersistPath);
 				if (!Directory.Exists(dir))
 					Directory.CreateDirectory(dir);
 				var json = JsonSerializer.Serialize(rows, new JsonSerializerOptions { WriteIndented = true });
-				File.WriteAllText(creatorGridPersistPath, json);
+				File.WriteAllText(creatorFieldsPersistPath, json);
 			}
 			catch
 			{
@@ -858,14 +837,6 @@ namespace UIFRecordApp
 			var cell = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
 			// Force visual update of error text
 			dataGridView.InvalidateCell(cell);
-		}
-
-		private void EnsureCreatorDataGridHasOneRow()
-		{
-			if (creatorDataGrid.Rows.Count < 1)
-			{
-				creatorDataGrid.Rows.Add();
-			}
 		}
 	}
 }

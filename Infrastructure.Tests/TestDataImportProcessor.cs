@@ -41,7 +41,7 @@ namespace Infrastructure.Tests
 			Assert.That(creator.ContactPerson, Is.EqualTo("John Doe"));
 			Assert.That(creator.ContactTelephoneNo, Is.EqualTo("0123456789"));
 			Assert.That(creator.ContactEmailAddress, Is.EqualTo("john@example.com"));
-			Assert.That(creator.PayrollMonth, Is.EqualTo("202406"));
+			Assert.That(creator.PayrollMonth, Is.EqualTo(new DateTime(2024, 06, 01)));
 
 			var employee = result.Employees[0];
 			Assert.That(employee.EmployeeUIFReferenceNo, Is.EqualTo("987654321"));

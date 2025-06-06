@@ -1,26 +1,19 @@
 ﻿using Core.Models;
 
-namespace UIFRecordApp
+namespace UI
 {
 	public static class DataGridViewToModelMapping
 	{
-		public static List<Creator> GetCreatorsFromGrid(DataGridView creatorDataGrid)
+		public static Creator GetCreatorFromFormFields(CreatorFormControls controls)
 		{
-			var creators = new List<Creator>();
-			foreach (DataGridViewRow row in creatorDataGrid.Rows)
+			return new Creator
 			{
-				if (row.IsNewRow) continue;
-				var creator = new Creator
-				{
-					CreatorUIFReferenceNo = row.Cells["CreatorUIFReferenceNo"].Value?.ToString() ?? "",
-					ContactPerson = row.Cells["ContactPerson"].Value?.ToString() ?? "",
-					ContactTelephoneNo = row.Cells["ContactTelephoneNo"].Value?.ToString() ?? "",
-					ContactEmailAddress = row.Cells["ContactEmailAddress"].Value?.ToString() ?? "",
-					PayrollMonth = row.Cells["PayrollMonth"].Value?.ToString() ?? ""
-				};
-				creators.Add(creator);
-			}
-			return creators;
+				CreatorUIFReferenceNo = controls.UIFReferenceNoTextBox.Text ?? "",
+				ContactPerson = controls.ContactPersonTextBox.Text ?? "",
+				ContactTelephoneNo = controls.ContactTelephoneNoTextBox.Text ?? "",
+				ContactEmailAddress = controls.ContactEmailAddressTextBox.Text ?? "",
+				PayrollMonth = controls.PayrollMonthDatePicker.Value
+			};
 		}
 
 		public static List<Employee> GetEmployeesFromGrid(DataGridView employeeDataGrid)
