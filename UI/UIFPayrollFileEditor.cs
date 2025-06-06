@@ -21,7 +21,6 @@ namespace UI
 
 		private CreatorFormControls creatorFormControls;
 
-		// Field to track the row index where the context menu was invoked
 		private int _contextMenuRowIndex = -1;
 
 		public UIFPayrollFileEditor()
@@ -214,7 +213,8 @@ namespace UI
 			{
 				if (sfd.ShowDialog() == DialogResult.OK)
 				{
-					using (var sw = new StreamWriter(sfd.FileName))
+					//TODO: ASCII encoding can not output data with accented characters - consider sanitizing input
+					using (var sw = new StreamWriter(sfd.FileName, false, System.Text.Encoding.ASCII))
 					{
 						var result = DataExportProcessor.Process(creator, employees, employers);
 						foreach (var line in result)
@@ -309,7 +309,6 @@ namespace UI
 			{
 				if (ofd.ShowDialog() == DialogResult.OK)
 				{
-					// Validate file extension: must be .xyz where x, y, z are digits
 					var fileName = Path.GetFileName(ofd.FileName);
 					if (!System.Text.RegularExpressions.Regex.IsMatch(fileName, @"\.\d{3}$"))
 					{
@@ -346,7 +345,7 @@ namespace UI
 			var dataGridView = sender as DataGridView;
 			if (dataGridView == null) return;
 
-			if (dataGridView.Rows[e.RowIndex].IsNewRow) return; // Skip validation for new row placeholder
+			if (dataGridView.Rows[e.RowIndex].IsNewRow) return;
 
 			var colName = dataGridView.Columns[e.ColumnIndex].Name;
 
@@ -406,7 +405,7 @@ namespace UI
 			var dataGridView = sender as DataGridView;
 			if (dataGridView == null) return;
 
-			if (dataGridView.Rows[e.RowIndex].IsNewRow) return; // Skip validation for new row placeholder
+			if (dataGridView.Rows[e.RowIndex].IsNewRow) return;
 
 			if (dataGridView.IsCurrentRowDirty)
 				dataGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
@@ -498,19 +497,17 @@ namespace UI
 			}
 		}
 
-		// Handler to enforce numeric-only input in specific columns
 		private void EmployeeDataGridView_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
 		{
 			var dgv = sender as DataGridView;
 			if (dgv == null) return;
 
-			// Remove any existing handlers
 			if (e.Control is TextBox tb)
 			{
-				tb.KeyPress -= NumericTextBox_KeyPress;
-				tb.TextChanged -= NumericTextBox_TextChanged;
-				tb.KeyPress -= AmountTextBox_KeyPress;
-				tb.TextChanged -= AmountTextBox_TextChanged;
+				tb.KeyPress -= NumericTextBox_KeyPress_SuppressInvalidKeyInput;
+				tb.TextChanged -= NumericTextBox_TextChanged_RemoveInvalidKeyInput;
+				tb.KeyPress -= AmountTextBox_KeyPress_SuppressInvalidKeyInput;
+				tb.TextChanged -= AmountTextBox_TextChanged_RemoveInvalidKeyInput;
 
 				int colIndex = dgv.CurrentCell?.ColumnIndex ?? -1;
 				if (colIndex >= 0)
@@ -537,13 +534,13 @@ namespace UI
 					};
 					if (numericColumns.Contains(colName))
 					{
-						tb.KeyPress += NumericTextBox_KeyPress;
-						tb.TextChanged += NumericTextBox_TextChanged;
+						tb.KeyPress += NumericTextBox_KeyPress_SuppressInvalidKeyInput;
+						tb.TextChanged += NumericTextBox_TextChanged_RemoveInvalidKeyInput;
 					}
 					if (amountColumns.Contains(colName))
 					{
-						tb.KeyPress += AmountTextBox_KeyPress;
-						tb.TextChanged += AmountTextBox_TextChanged;
+						tb.KeyPress += AmountTextBox_KeyPress_SuppressInvalidKeyInput;
+						tb.TextChanged += AmountTextBox_TextChanged_RemoveInvalidKeyInput;
 					}
 				}
 			}
@@ -552,14 +549,13 @@ namespace UI
 		private void ApplyNumericTextBoxHandlers(TextBox tb)
 		{
 			if (tb == null) return;
-			tb.KeyPress -= NumericTextBox_KeyPress;
-			tb.TextChanged -= NumericTextBox_TextChanged;
-			tb.KeyPress += NumericTextBox_KeyPress;
-			tb.TextChanged += NumericTextBox_TextChanged;
+			tb.KeyPress -= NumericTextBox_KeyPress_SuppressInvalidKeyInput;
+			tb.TextChanged -= NumericTextBox_TextChanged_RemoveInvalidKeyInput;
+			tb.KeyPress += NumericTextBox_KeyPress_SuppressInvalidKeyInput;
+			tb.TextChanged += NumericTextBox_TextChanged_RemoveInvalidKeyInput;
 		}
 
-		// Suppress non-digit key input
-		private void NumericTextBox_KeyPress(object sender, KeyPressEventArgs e)
+		private void NumericTextBox_KeyPress_SuppressInvalidKeyInput(object sender, KeyPressEventArgs e)
 		{
 			if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
 			{
@@ -567,7 +563,7 @@ namespace UI
 			}
 		}
 
-		private void AmountTextBox_KeyPress(object sender, KeyPressEventArgs e)
+		private void AmountTextBox_KeyPress_SuppressInvalidKeyInput(object sender, KeyPressEventArgs e)
 		{
 			var tb = sender as TextBox;
 			if (tb == null) return;
@@ -593,8 +589,7 @@ namespace UI
 			e.Handled = true;
 		}
 
-		// Remove non-numeric characters on paste or programmatic changes
-		private void NumericTextBox_TextChanged(object sender, EventArgs e)
+		private void NumericTextBox_TextChanged_RemoveInvalidKeyInput(object sender, EventArgs e)
 		{
 			var tb = sender as TextBox;
 			if (tb == null) return;
@@ -608,7 +603,7 @@ namespace UI
 			}
 		}
 
-		private void AmountTextBox_TextChanged(object sender, EventArgs e)
+		private void AmountTextBox_TextChanged_RemoveInvalidKeyInput(object sender, EventArgs e)
 		{
 			var tb = sender as TextBox;
 			if (tb == null) return;
@@ -617,7 +612,6 @@ namespace UI
 			string original = tb.Text;
 			int selStart = tb.SelectionStart;
 
-			// Build filtered string: allow digits, at most one decimal separator
 			bool seenSeparator = false;
 			var filteredChars = new List<char>(original.Length);
 			foreach (char c in original)
@@ -648,10 +642,10 @@ namespace UI
 			string version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion ?? "Unknown";
 
 			string aboutText =
-				"UIF Record App\n" +
+				"UIF Payroll File Editor\n" +
 				$"Version: {version}\n" +
 				"Author: Tania Welsford\n\n" +
-				"This application allows you to manage, import, and export UIF payroll records in CSV format.\n" +
+				"This application allows you to manage, import, and export UIF payroll records in the expected format.\n" +
 				"Features:\n" +
 				"- Data entry and validation for Creator, Employer, and Employee records\n" +
 				"- Import/export to CSV\n" +
@@ -659,7 +653,7 @@ namespace UI
 				"- Combo box support for status and account types\n\n" +
 				"© 2025 Tania Welsford. All rights reserved.";
 
-			MessageBox.Show(aboutText, "About UIF Record App", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			MessageBox.Show(aboutText, "About UIF Payroll File Editor", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)

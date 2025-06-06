@@ -98,6 +98,6 @@ namespace Infrastructure.Export
 		}
 
 		private static string Quote(string value)
-			=> string.IsNullOrEmpty(value) ? "" : $"\"{value}\"";
+			=> string.IsNullOrWhiteSpace(value) ? "" : $"\"{value.Trim()}\"";
 	}
 }
