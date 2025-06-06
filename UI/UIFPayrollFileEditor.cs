@@ -331,12 +331,19 @@ namespace UIFRecordApp
 
 			using (var ofd = new OpenFileDialog
 			{
-				Title = "Import from File"
+				Title = "Import from File",
+				Filter = "Payroll Files (*.??? )|*.???|All Files (*.*)|*.*"
 			})
 			{
-				//TODO: File validation
 				if (ofd.ShowDialog() == DialogResult.OK)
 				{
+					// Validate file extension: must be .xyz where x, y, z are digits
+					var fileName = Path.GetFileName(ofd.FileName);
+					if (!System.Text.RegularExpressions.Regex.IsMatch(fileName, @"\.\d{3}$"))
+					{
+						MessageBox.Show("Selected file must have an extension of three numeric digits (e.g., .001, .123).", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+						return;
+					}
 					try
 					{
 						var lines = File.ReadAllLines(ofd.FileName)
