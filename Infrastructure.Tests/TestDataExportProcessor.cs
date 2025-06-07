@@ -39,7 +39,7 @@ namespace Infrastructure.Tests
 					IDNumber = "8001015009087",
 					Surname = "Smith",
 					FirstNames = "Jane",
-					DateOfBirth = "19800101",
+					DateOfBirth = new DateTime(1980, 01, 01),
 					GrossTaxableRemuneration = 1234.56m,
 					RemunerationSubjectToUIF = 1200.00m,
 					UIFContribution = 12.34m,

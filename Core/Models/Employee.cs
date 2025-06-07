@@ -10,9 +10,9 @@
 		public string AlternateNumber { get; set; } = string.Empty;
 		public string Surname { get; set; } = string.Empty;
 		public string FirstNames { get; set; } = string.Empty;
-		public string DateOfBirth { get; set; } = string.Empty; // Format: yyyyMMdd
-		public string DateEmployedFrom { get; set; } = string.Empty; // Format: yyyyMMdd
-		public string DateEmployedTo { get; set; } = string.Empty; // Format: yyyyMMdd
+		public DateTime? DateOfBirth { get; set; }
+		public DateTime? DateEmployedFrom { get; set; }
+		public DateTime? DateEmployedTo { get; set; }
 		public string EmploymentStatus { get; set; } = string.Empty;
 		public string ReasonForNonContribution { get; set; } = string.Empty;
 		public decimal GrossTaxableRemuneration { get; set; }

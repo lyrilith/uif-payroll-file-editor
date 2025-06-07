@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.36105.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "UI\UI.csproj", "{C61254DB-2364-45AF-B4C4-D56B2E18F47F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIFPayrollFileEditor", "UI\UIFPayrollFileEditor.csproj", "{C61254DB-2364-45AF-B4C4-D56B2E18F47F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Tests", "Core.Tests\Core.Tests.csproj", "{669E6EF9-E385-4E8E-B1DD-8705A06A7549}"
 EndProject

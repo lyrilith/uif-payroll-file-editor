@@ -14,14 +14,14 @@
 			new PayrollColumn("8250", "DateOfBirth", 8, ColumnType.Date),
 			new PayrollColumn("8260", "DateEmployedFrom", 8, ColumnType.Date),
 			new PayrollColumn("8270", "DateEmployedTo", 8, ColumnType.Date),
-			new PayrollColumn("8280", "EmploymentStatus", 2, ColumnType.Numeric, comboBoxDataSource: Core.DataSources.EmploymentStatusDataSource),
-			new PayrollColumn("8290", "ReasonForNonContribution", 2, ColumnType.Numeric, comboBoxDataSource: Core.DataSources.NonContributionReasonDataSource),
+			new PayrollColumn("8280", "EmploymentStatus", 2, ColumnType.Numeric, comboBoxDataSource: DataSources.EmploymentStatusDataSource),
+			new PayrollColumn("8290", "ReasonForNonContribution", 2, ColumnType.Numeric, comboBoxDataSource: DataSources.NonContributionReasonDataSource),
 			new PayrollColumn("8300", "GrossTaxableRemuneration", 16, ColumnType.Amount),
 			new PayrollColumn("8310", "RemunerationSubjectToUIF", 16, ColumnType.Amount),
 			new PayrollColumn("8320", "UIFContribution", 16, ColumnType.Amount),
 			new PayrollColumn("8330", "BankBranchCode", 8, ColumnType.Numeric),
 			new PayrollColumn("8340", "BankAccountNo", 16, ColumnType.Numeric),
-			new PayrollColumn("8350", "BankAccountType", 2, ColumnType.Numeric, comboBoxDataSource: Core.DataSources.BankAccountTypeDataSource)
+			new PayrollColumn("8350", "BankAccountType", 2, ColumnType.Numeric, comboBoxDataSource: DataSources.BankAccountTypeDataSource)
 		];
 	}
 }

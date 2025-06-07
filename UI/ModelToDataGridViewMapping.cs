@@ -38,9 +38,9 @@ namespace UI
 				row.Cells["AlternateNumber"].Value = employee.AlternateNumber;
 				row.Cells["Surname"].Value = employee.Surname;
 				row.Cells["FirstNames"].Value = employee.FirstNames;
-				row.Cells["DateOfBirth"].Value = employee.DateOfBirth;
-				row.Cells["DateEmployedFrom"].Value = employee.DateEmployedFrom;
-				row.Cells["DateEmployedTo"].Value = employee.DateEmployedTo;
+				row.Cells["DateOfBirth"].Value = employee.DateOfBirth?.ToString("yyyy-MM-dd") ?? "";
+				row.Cells["DateEmployedFrom"].Value = employee.DateEmployedFrom?.ToString("yyyy-MM-dd") ?? "";
+				row.Cells["DateEmployedTo"].Value = employee.DateEmployedTo?.ToString("yyyy-MM-dd") ?? "";
 				row.Cells["EmploymentStatus"].Value = employee.EmploymentStatus;
 				row.Cells["ReasonForNonContribution"].Value = employee.ReasonForNonContribution;
 				row.Cells["GrossTaxableRemuneration"].Value = employee.GrossTaxableRemuneration;

@@ -10,7 +10,9 @@ namespace UI
 	public partial class UIFPayrollFileEditor : Form
 	{
 		private DateTimePicker datePicker;
-		private readonly string[] eployeeDateColumns = ["DateOfBirth", "DateEmployedFrom", "DateEmployedTo"];
+		private readonly string[] employeeDateColumns = ["DateOfBirth", "DateEmployedFrom", "DateEmployedTo"];
+		private readonly string[] employeeAmountColumns = ["GrossTaxableRemuneration", "RemunerationSubjectToUIF", "UIFContribution"];
+		private readonly string[] employerAmountColumns = ["TotalGrossTaxableRemuneration", "TotalGrossRemunerationSubjectToUIF", "TotalContributions"];
 
 		private readonly BindingSource employmentStatusBindingSource = new();
 		private readonly BindingSource nonContributionReasonBindingSource = new();
@@ -95,6 +97,7 @@ namespace UI
 			employeeDataGrid.CellValidating += DataGridView_CellValidating;
 			employeeDataGrid.RowValidating += EmployeeDataGrid_RowValidating;
 			employeeDataGrid.CellEndEdit += EmployeeDataGrid_CellEndEdit;
+			employerDataGrid.CellEndEdit += EmployerDataGrid_CellEndEdit;
 
 			// Register EditingControlShowing for numeric-only columns
 			employeeDataGrid.EditingControlShowing += EmployeeDataGridView_EditingControlShowing;
@@ -161,7 +164,7 @@ namespace UI
 
 		private void EmployeeDataGrid_CellClick(object sender, DataGridViewCellEventArgs e)
 		{
-			if (eployeeDateColumns.Contains(employeeDataGrid.Columns[e.ColumnIndex].Name))
+			if (employeeDateColumns.Contains(employeeDataGrid.Columns[e.ColumnIndex].Name))
 			{
 				Rectangle rect = employeeDataGrid.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
 				datePicker.Size = rect.Size;
@@ -523,15 +526,8 @@ namespace UI
 						"PAYENumber",
 						"TotalEmployees"
 					};
-					var amountColumns = new[]
-					{
-						"GrossTaxableRemuneration",
-						"RemunerationSubjectToUIF",
-						"UIFContribution",
-						"TotalGrossTaxableRemuneration",
-						"TotalGrossRemunerationSubjectToUIF",
-						"TotalContributions"
-					};
+					var amountColumns = employeeAmountColumns.Concat(employerAmountColumns).ToArray();
+
 					if (numericColumns.Contains(colName))
 					{
 						tb.KeyPress += NumericTextBox_KeyPress_SuppressInvalidKeyInput;
@@ -829,8 +825,51 @@ namespace UI
 			if (dataGridView == null) return;
 
 			var cell = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+			var colName = dataGridView.Columns[e.ColumnIndex].Name;
+
+			// Calculate UIFContribution based on RemunerationSubjectToUIF
+			if (colName == "RemunerationSubjectToUIF" && cell.Value != null && decimal.TryParse(cell.Value.ToString(), out var amount) && amount > 0) 
+			{
+				dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex + 1].Value = Math.Truncate(amount * 0.02M * 100) / 100;
+			}
+			
+			if (employeeAmountColumns.Contains(colName))
+			{
+				if (decimal.TryParse(cell.Value?.ToString(), out var value))
+				{
+					// Format as N2 (thousands separator, 2 decimals)
+					cell.Value = value.ToString("N2");
+				}
+				else
+				{
+					cell.Value = "";
+				}
+			}
+
 			// Force visual update of error text
 			dataGridView.InvalidateCell(cell);
+		}
+
+		private void EmployerDataGrid_CellEndEdit(object? sender, DataGridViewCellEventArgs e)
+		{
+			var dataGridView = sender as DataGridView;
+			if (dataGridView == null) return;
+
+			var cell = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+			var colName = dataGridView.Columns[e.ColumnIndex].Name;
+
+			if (employerAmountColumns.Contains(colName))
+			{
+				if (decimal.TryParse(cell.Value?.ToString(), out var value))
+				{
+					// Format as N2 (thousands separator, 2 decimals)
+					cell.Value = value.ToString("N2");
+				}
+				else
+				{
+					cell.Value = "";
+				}
+			}
 		}
 	}
 }

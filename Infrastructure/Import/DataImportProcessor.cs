@@ -1,5 +1,6 @@
 using Core.Models;
 using Core.ColumnDeclarations;
+using System.Runtime.Serialization;
 
 namespace Infrastructure.Import
 {
@@ -90,11 +91,11 @@ namespace Infrastructure.Import
 						case nameof(Employee.AlternateNumber): e.AlternateNumber = val; break;
 						case nameof(Employee.Surname): e.Surname = val; break;
 						case nameof(Employee.FirstNames): e.FirstNames = val; break;
-						case nameof(Employee.DateOfBirth): e.DateOfBirth = val; break;
-						case nameof(Employee.DateEmployedFrom): e.DateEmployedFrom = val; break;
-						case nameof(Employee.DateEmployedTo): e.DateEmployedTo = val; break;
-						case nameof(Employee.EmploymentStatus): e.EmploymentStatus = val; break;
-						case nameof(Employee.ReasonForNonContribution): e.ReasonForNonContribution = val; break;
+						case nameof(Employee.DateOfBirth): e.DateOfBirth = ParseDate(val); break;
+						case nameof(Employee.DateEmployedFrom): e.DateEmployedFrom = ParseDate(val); break;
+						case nameof(Employee.DateEmployedTo): e.DateEmployedTo = ParseDate(val); break;
+						case nameof(Employee.EmploymentStatus): e.EmploymentStatus = ToDataSourceValue(col.ComboBoxDataSource, val); break;
+						case nameof(Employee.ReasonForNonContribution): e.ReasonForNonContribution = ToDataSourceValue(col.ComboBoxDataSource, val); break;
 						case nameof(Employee.GrossTaxableRemuneration):
 							e.GrossTaxableRemuneration = decimal.TryParse(val, out var gtr) ? gtr : 0;
 							break;
@@ -106,7 +107,7 @@ namespace Infrastructure.Import
 							break;
 						case nameof(Employee.BankBranchCode): e.BankBranchCode = val; break;
 						case nameof(Employee.BankAccountNo): e.BankAccountNo = val; break;
-						case nameof(Employee.BankAccountType): e.BankAccountType = val; break;
+						case nameof(Employee.BankAccountType): e.BankAccountType = ToDataSourceValue(col.ComboBoxDataSource, val); break;
 					}
 				}
 			}
@@ -114,6 +115,27 @@ namespace Infrastructure.Import
 			if (e.EmployerID == 0 && rowDict.TryGetValue("00", out var employerIDValue))
 				e.EmployerID = int.TryParse(employerIDValue, out var id) ? id : 1;
 			return e;
+		}
+
+		private static DateTime? ParseDate(string value)
+		{
+			if (!string.IsNullOrWhiteSpace(value) && DateTime.TryParseExact(value, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out var dateResult))
+				return dateResult;
+			return null;
+		}
+
+		private static string ToDataSourceValue(Dictionary<string, string> columnDataSource, string? value)
+		{
+			if (!string.IsNullOrWhiteSpace(value))
+			{
+				if (columnDataSource.ContainsKey(value))
+					return value;
+				else if (columnDataSource.ContainsKey(value.Replace("0", "")))
+					return value.Replace("0", "");
+				else if (columnDataSource.ContainsKey($"0{value}"))
+					return $"0{value}";
+			}
+			return "";
 		}
 
 		private static Employer ToEmployer(Dictionary<string, string> rowDict)
